@@ -19,18 +19,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LibraryServiceTest {
 
-    private static EntityManagerFactory emf;
+    private static EntityManagerFactory entityManagerFactory;
     private EntityManager em;
     private LibraryService service;
 
     @BeforeAll
     static void initAll() {
-        emf = Persistence.createEntityManagerFactory("libraryPU");
+        entityManagerFactory = Persistence.createEntityManagerFactory("libraryPU");
     }
 
     @BeforeEach
     void init() {
-        em = emf.createEntityManager();
+        em = entityManagerFactory.createEntityManager();
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         service = new LibraryService(queryFactory, em);
     }
@@ -42,7 +42,7 @@ class LibraryServiceTest {
 
     @AfterAll
     static void destroyAll() {
-        if (emf.isOpen()) emf.close();
+        if (entityManagerFactory.isOpen()) entityManagerFactory.close();
     }
 
     @Test
