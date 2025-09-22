@@ -1,37 +1,44 @@
 package org.uthmaniv;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
+import org.uthmaniv.exception.StudentNotFoundException;
 
 public class StudentRepository {
-    private final EntityManager em;
+    private final EntityManager entityManager;
+    private final JPAQueryFactory queryFactory;
 
-    public StudentRepository(EntityManager em) {
-        this.em = em;
+    public StudentRepository(EntityManager entityManager, JPAQueryFactory queryFactory) {
+        this.entityManager = entityManager;
+        this.queryFactory = queryFactory;
     }
 
-    public Student save(Student s) {
-        em.getTransaction().begin();
-        em.persist(s);
-        em.getTransaction().commit();
-        return s;
+    public void save(Student s) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(s);
+        entityManager.getTransaction().commit();
     }
 
     public Student findById(String id) {
-        return em.find(Student.class, id);
+        return entityManager.find(Student.class, id);
     }
 
-    public Student findByName(String firstName, String lastName) {
-        try {
-            return em.createQuery(
-                            "SELECT s FROM Student s WHERE s.firstName = :firstName AND s.lastName = :lastName",
-                            Student.class)
-                    .setParameter("firstName", firstName)
-                    .setParameter("lastName", lastName)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
+    public Student findByName(String firstName, String lastName) throws StudentNotFoundException {
+        QStudent student = QStudent.student;
+
+        Student result = queryFactory
+                .selectFrom(student)
+                .where(student.firstName.eq(firstName)
+                        .and(student.lastName.eq(lastName)))
+                .fetchOne();
+
+        if (result == null) {
+            throw new StudentNotFoundException(
+                    "Student not found with name: " + firstName + " " + lastName
+            );
         }
+
+        return result;
     }
 
 

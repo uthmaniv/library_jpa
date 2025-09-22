@@ -1,8 +1,11 @@
 package org.uthmaniv;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.uthmaniv.exception.BookNotFoundException;
+import org.uthmaniv.exception.StudentNotFoundException;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -14,25 +17,22 @@ public class LibraryService {
     private final BookRepository bookRepo;
     private final StudentRepository studentRepo;
     private final BorrowRepository borrowRepo;
-    private final EntityManager em;
 
-    public LibraryService(EntityManager em) {
-        this.em = em;
-        this.bookRepo = new BookRepository(em);
-        this.studentRepo = new StudentRepository(em);
-        this.borrowRepo = new BorrowRepository(em);
+    public LibraryService(JPAQueryFactory queryFactory, EntityManager entityManager) {
+        this.bookRepo = new BookRepository(entityManager);
+        this.studentRepo = new StudentRepository(entityManager,queryFactory);
+        this.borrowRepo = new BorrowRepository(entityManager);
     }
 
-    public Student createStudent(String firstName, String lastName) {
+    public void createStudent(String firstName, String lastName) throws StudentNotFoundException {
         Student existing = studentRepo.findByName(firstName, lastName);
         if (existing != null) {
             logger.info("Student '{}' already exists with id {}", existing.getFullName(), existing.getId());
-            return existing;
+            return;
         }
         Student s = new Student(firstName, lastName);
         studentRepo.save(s);
         logger.info("Created student: {} ({})", s.getFullName(), s.getId());
-        return s;
     }
 
     public Book createBook(long isbn, String title, String author, String genre, LocalDate publicationYear) {
@@ -42,15 +42,13 @@ public class LibraryService {
         return b;
     }
 
-    // QueryDSL-based retrieval of all books
     public List<Book> getAllBooks() {
         List<Book> books = bookRepo.findAll();
         logger.info("Fetched {} books", books.size());
         return books;
     }
 
-    // Borrow book: accepts studentName and bookId (or book title as convenience)
-    public String borrowBook(String fullName, String title) {
+    public String borrowBook(String fullName, String title) throws BookNotFoundException, StudentNotFoundException {
         String[] fullNameArray = fullName.split(" ");
 
         Student student = studentRepo.findByName(fullNameArray[0],fullNameArray[1]);
@@ -78,8 +76,7 @@ public class LibraryService {
         return "Book issued successfully.";
     }
 
-    // Return book for student (by name)
-    public String returnBook(String fullName) {
+    public String returnBook(String fullName) throws StudentNotFoundException {
         String[] fullNameArray = fullName.split(" ");
 
         Student student = studentRepo.findByName(fullNameArray[0], fullNameArray[1]);

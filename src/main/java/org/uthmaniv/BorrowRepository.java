@@ -12,21 +12,18 @@ public class BorrowRepository {
         this.em = em;
     }
 
-    public BorrowRecord save(BorrowRecord br) {
+    public void save(BorrowRecord br) {
         em.getTransaction().begin();
         em.persist(br);
         em.getTransaction().commit();
-        return br;
     }
 
-    public BorrowRecord update(BorrowRecord br) {
+    public void update(BorrowRecord br) {
         em.getTransaction().begin();
         BorrowRecord merged = em.merge(br);
         em.getTransaction().commit();
-        return merged;
     }
 
-    // find active borrow for student (returnedAt is null)
     public BorrowRecord findActiveByStudent(Student student) {
         try {
             return em.createQuery("SELECT b FROM BorrowRecord b WHERE b.student = :s AND b.returnedAt IS NULL", BorrowRecord.class)

@@ -2,42 +2,49 @@ package org.uthmaniv;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.uthmaniv.exception.BookNotFoundException;
 
 import java.util.List;
 
 public class BookRepository {
-    private final EntityManager em;
-    private final JPAQueryFactory qf;
+    private final EntityManager entityManager;
+    private final JPAQueryFactory queryFactory;
 
-    public BookRepository(EntityManager em) {
-        this.em = em;
-        this.qf = new JPAQueryFactory(em);
+    public BookRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    public Book save(Book book) {
-        em.getTransaction().begin();
-        em.persist(book);
-        em.getTransaction().commit();
-        return book;
+
+    public void save(Book book) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(book);
+        entityManager.getTransaction().commit();
     }
 
-    public Book findById(String id) {
-        return em.find(Book.class, id);
+    public Book findById(int id) throws BookNotFoundException {
+        return entityManager.find(Book.class, id);
     }
 
-    public Book findByTitle(String title) {
-        return em.createQuery(
-                        "SELECT b FROM Book b WHERE b.title = :title", Book.class)
-                .setParameter("title", title)
-                .getSingleResult();
+    public Book findByTitle(String title) throws BookNotFoundException {
+        QBook book = QBook.book;
+        Book result = queryFactory
+                .selectFrom(book)
+                .where(book.title.eq(title))
+                .fetchOne();
+
+        if (result == null) {
+            throw new BookNotFoundException("Book with title '" + title + "' not found.");
+        }
+
+        return result;
     }
 
 
     // QueryDSL: get all books
     public List<Book> findAll() {
         QBook b = QBook.book;
-        return qf.selectFrom(b).fetch();
+        return queryFactory.selectFrom(b).fetch();
     }
 
 }
-
