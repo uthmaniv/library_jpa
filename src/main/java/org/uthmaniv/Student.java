@@ -1,16 +1,13 @@
 package org.uthmaniv;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-import java.awt.print.Book;
 import java.util.Objects;
 
 @Entity
 public class Student {
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column
@@ -19,8 +16,7 @@ public class Student {
     @Column
     private String lastName;
 
-    public Student(int id, String firstName, String lastName) {
-        this.id = id;
+    public Student(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -47,6 +43,10 @@ public class Student {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     public Student setLastName(String lastName) {

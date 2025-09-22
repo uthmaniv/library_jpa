@@ -2,7 +2,6 @@ package org.uthmaniv;
 
 import jakarta.persistence.*;
 
-import java.awt.print.Book;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,10 +12,10 @@ public class BorrowRecord {
     @Column(nullable = false)
     private String id;
 
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private Student student;
 
-    @ManyToOne(optional = false)
+    @OneToMany
     private Book book;
 
     @Column(nullable = false)
