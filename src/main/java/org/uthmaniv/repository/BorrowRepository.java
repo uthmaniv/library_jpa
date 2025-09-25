@@ -1,7 +1,9 @@
-package org.uthmaniv;
+package org.uthmaniv.repositories;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import org.uthmaniv.models.BorrowRecord;
+import org.uthmaniv.models.Student;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.uthmaniv;
+package org.uthmaniv.services;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -6,6 +6,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.uthmaniv.exception.BookNotFoundException;
 import org.uthmaniv.exception.StudentNotFoundException;
+import org.uthmaniv.models.Book;
+import org.uthmaniv.models.BorrowRecord;
+import org.uthmaniv.models.Student;
+import org.uthmaniv.repositories.BookRepository;
+import org.uthmaniv.repositories.BorrowRepository;
+import org.uthmaniv.repositories.StudentRepository;
 
 import java.time.Instant;
 import java.time.LocalDate;

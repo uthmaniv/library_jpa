@@ -1,4 +1,4 @@
-package org.uthmaniv;
+package org.uthmaniv.models;
 
 import jakarta.persistence.*;
 

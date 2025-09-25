@@ -1,8 +1,10 @@
-package org.uthmaniv;
+package org.uthmaniv.repositories;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.uthmaniv.QStudent;
 import org.uthmaniv.exception.StudentNotFoundException;
+import org.uthmaniv.models.Student;
 
 public class StudentRepository {
     private final EntityManager entityManager;

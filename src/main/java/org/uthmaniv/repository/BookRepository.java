@@ -1,8 +1,10 @@
-package org.uthmaniv;
+package org.uthmaniv.repositories;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.uthmaniv.QBook;
 import org.uthmaniv.exception.BookNotFoundException;
+import org.uthmaniv.models.Book;
 
 import java.util.List;
 

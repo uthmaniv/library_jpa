@@ -1,4 +1,4 @@
-package org.uthmaniv;
+package org.uthmaniv.models;
 
 import jakarta.persistence.*;
 
@@ -103,7 +103,7 @@ public class Book {
 
     @Override
     public String toString() {
-        return "org.uthmaniv.Book{" +
+        return "org.uthmaniv.models.Book{" +
                 "id=" + id +
                 ", isbn=" + isbn +
                 ", title='" + title + '\'' +
